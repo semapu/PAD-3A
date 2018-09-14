@@ -1,0 +1,46 @@
+Swing: Concurrency
+-Event dispatch thread
+-El thread d'events --> NO es pot bloquejar!
+	-thread inicials
+	-EDT: Event Dispatch Thread, l'unic que executa codi gràfic
+	-Worker threads (SwingWorker) o be programant directament Thread.
+-Widget per manternir text multilinea: JTextArea --> Component.setText (Excepcio: no fa falta ficarlo al EDT)
+-Per una sola linea: JTextField. 
+	Volem capturar events quan s'apreti CR: w.addActionListener(ActionListener)
+						widget			te dins ActionPerformed
+	El widget te el paper de Observable i el Action Listener de Observer
+
+Als widgets, views sel's por associar un model
+us = new JList(users);               --> users: ListModel
+us.addElement("pep");
+us.removeElement("joana);
+
+
+Android
+-UI thread --> Executa activities
+	
+	-EDT
+	-Worker thread (AsyncTask)
+-Widget seria view.
+-Per introduir una sola linea: view.setOnEditorActionListener(OnEditorActionListener)
+								onEditorAction
+-Classes que comencen en on, sin handlers
+
+Als widgets, views sel's por associar un model
+ListView.setAdapter(list)            --> list: ListAdapter
+entries = new ArrayAdapter<Entry> (   ,   , Entry[] ArrayList <Entry>)
+
+
+
+_____________________________________________
+
+Hello World:
+window --> JFrame 
+	   JLabel
+
+invokeLater  o  invokeAndWait
+
+Convert Celcius:
+JFrame, JPanel, JTextField, 2 JLabels, JButton
+JPanel te com a Layout un GridLayout(2,2) --> Explica com es distribueixen els widgets en la finestra
+Altres tipus de Layout --> Grid, Flow, Box, Border

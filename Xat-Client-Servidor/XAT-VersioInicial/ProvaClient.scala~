@@ -1,0 +1,38 @@
+import akka.actor._
+import java.net._
+import java.io._
+
+
+object ProvaClient  {
+
+    def main(args: Array[String]): Unit = {
+        val system = ActorSystem("HelloRemoteSystem")
+        val socket = new Socket("localhost", args(0).toInt)
+        val client = system.actorOf(Props(classOf[RemoteActor], socket))
+        val in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+        val out = new PrintWriter(socket.getOutputStream(), true)
+        val read = RemoteActor{
+            read ! "read"
+        }
+        val write = RemoteActor{
+            write ! "write"
+        }
+    }
+}
+
+class RemoteActor(socket: Socket) extends Actor {
+    import context._
+    def receive = {
+        String line = new String()
+        case "write" =>
+            while((line = readLine()) != null){
+                out.println(line)
+            }
+        case "read" =>
+            while((line = in.readLine) != null){
+                println(line)
+            }
+        case _ =>
+            println("????")
+    }
+}

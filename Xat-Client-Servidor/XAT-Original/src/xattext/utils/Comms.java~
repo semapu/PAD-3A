@@ -1,0 +1,6 @@
+
+public interface Comms {   
+    public static final int portServidor = 50000;
+    public static final String host = "localhost";
+  
+}

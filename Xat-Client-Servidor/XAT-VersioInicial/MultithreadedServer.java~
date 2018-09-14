@@ -1,0 +1,48 @@
+
+import java.io.IOException;
+import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
+public class MultithreadedServer extends Thread {
+    protected MyServerSocket serverSocket;
+    protected TreeMap<String,MySocket> workers;
+    protected String id;
+    final ReentrantReadWriteLock lo;
+
+    public MultithreadedServer() throws IOException {
+        serverSocket = new MyServerSocket(Comms.serverPort);
+        workers = new TreeMap<String,MySocket>();
+        lo = new ReentrantReadWriteLock();
+    }
+
+    @Override
+    public void run() {
+        while (true) {                                                                         
+            System.out.println("Server ready");
+            lo.readLock().lock();
+            MySocket workerSocket = serverSocket.accept();
+            workerSocket.println("0");      
+            workerSocket.println("Enter an identification:"); 
+            id = workerSocket.readLine();
+            System.out.println("Client "+id+" connected");
+            for (MySocket socket: workers.values()) {            
+                socket.println(id + " is now connected!");                        
+            }
+            try {              
+                workers.put(id, workerSocket);                
+                Worker worker = new Worker(id, workers);
+                new Thread(worker).start();
+            
+            } catch (IOException ex) {
+                Logger.getLogger(MultithreadedServer.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                lo.readLock().unlock();
+            }
+
+        }
+    }
+}
